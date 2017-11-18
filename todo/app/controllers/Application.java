@@ -3,6 +3,7 @@ package controllers;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import models.Category;
 import models.CategoryDetails;
+import models.Items;
 import models.Users;
 import play.Logger;
 import play.data.DynamicForm;
@@ -37,6 +38,19 @@ public class Application extends Controller {
 
     public static Result categoryDetails() {
         return ok(categoryDetails.render("Sub Category || TODO"));
+    }
+
+    public static Result itemdetails() {
+        return ok(itemDetails.render("Item TODO"));
+    }
+
+    public static Result viewDetails(Long Id) {
+        Category itm = Category.findbyCategoryId(Id);
+        return ok(viewItems.render("View Item Details",itm));
+    }
+
+    public static Result itemPage() {
+        return ok(itemDetails.render("Item Definition TODO"));
     }
 
     public static Result register() {
@@ -84,7 +98,7 @@ public class Application extends Controller {
             if (!check.password.equals(password)) {
                 result.put("message", "Invalid Password!");
                 result.put("code", "2001");
-                return ok(result);
+                return index();
             }
         } else{
             result.put("message", "Invalid Username!");
@@ -94,7 +108,7 @@ public class Application extends Controller {
 
         result.put("message","Login Successfull!");
         result.put("code","2003");
-        return ok(result);
+        return categoryDetailsPage();
     }
 
     public static Result categDetails(){
@@ -124,6 +138,8 @@ public class Application extends Controller {
         return ok(result);
     }
 
+
+
     public static Result categSubDetails(){
         ObjectNode result= Json.newObject();
 
@@ -149,6 +165,58 @@ public class Application extends Controller {
         result.put("message","Category"+categoryName+"Created Successfully!");
         result.put("code","2006");
         return ok(result);
+    }
+
+    public static Result itemDetails(){
+
+        ObjectNode result=Json.newObject();
+
+        DynamicForm form=Form.form().bindFromRequest();
+        String categoryId=form.get("categoryId");
+        String itemCode=form.get("itemCode");
+        String itemName=form.get("itemName");
+        String comments=form.get("comments");
+
+        Items itemDt=new Items();
+        itemDt.categoryId= Long.valueOf(categoryId);
+        itemDt.itemCode= itemCode;
+        itemDt.itemName= itemName;
+        itemDt.comments= comments;
+        itemDt.save();
+
+        result.put("message","Item"+itemName+"Created Successfully!");
+        result.put("code","2007");
+        return ok(result);
+
+
+    }
+
+    public static Result delCat(Long Id) {
+        Category del= Category.findbyCategoryId(Id);
+        if (del != null) {
+            Logger.info("Category Located! Delete Category");
+            del.delete();
+        }
+        else {
+        Logger.info("Category Not Found!");
+        }
+
+        return categoryDetailsPage();
+
+    }
+
+    public static Result delItm(Long Id) {
+        Items del= Items.findbyCategoryId(Id);
+        if (del != null) {
+            Logger.info("Sure You Want To Delete This Item");
+            del.delete();
+        }
+        else {
+            Logger.info("Item Not Found!");
+        }
+
+        return viewDetails(Id);
+
     }
 
 }

@@ -26,36 +26,30 @@
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Categorylist<span class="caret"></span></a>
             <ul class="dropdown-menu">
-              <li> <a href='categorylist'>'Category list</a></li>
-              <li> <a href='categorylist'>'Category list</a></li>
+              <li> <a href='/categorypage'>Category Master</a></li>
+              <li> <a href='/itempage	'>Item Master</a></li>
             </ul>
           </li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li><a href="@routes.Application.index()">Logout</a></li>
+        </ul>
       </div>
     </div>
   </nav>
   <div class="container">
+
     <h2>
 	 TODO Category Details
-      <h2>
-        <form name="frmLogin" id="frmLogin" method="POST" action="/categorydetails" class="form-registration">
+      </h2>
         <a href="/categorypage" class="btn btn-info btn-sm pull-right"><i class="glyphicon glyphicon-plus"> Add</i></a>
         <table class="table table-striped">
           <thead>
-            <th>
-	         ID
-            </th>
-            <th>
-			Name
-            </th>
-            <th>
-			Edit
-            </th>
-            <th>
-			ViewItems
-            </th>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Edit</th>
+            <th>ViewItems</th>
+            <th>Delete</th>
           </thead>
 
           <tbody>
@@ -68,11 +62,15 @@
                 @category.categoryName
               </td>
               <td>
-                <a href="file:///D:/thecodevillage/github/Html/HtmlIntro/addcategory.html"> <span class="btn btn-group pull-right">Edit</span></a>
+                <a class="btn btn-info btn-sm" href="@routes.Application.categoryPage()"> Edit</a>
               </td>
 
               <td>
-                <a href="file:///D:/thecodevillage/github/Html/HtmlIntro/adddetails.html"> <span class="btn btn-group pull-right">ViewItems</span></a>
+                <a class="btn btn-info btn-sm" href="@routes.Application.viewDetails(category.id)">ViewItems</a>
+              </td>
+
+              <td>
+                <a class="btn btn-danger btn-sm" href="@routes.Application.delCat(category.id)">Delete</a>
               </td>
             </tr>
               }
@@ -80,7 +78,6 @@
 
         </tbody>
         </table>
-        </form>
   </div>
 </body>
 </html>

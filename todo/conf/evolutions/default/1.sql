@@ -19,6 +19,15 @@ create table tbl_category_details (
   constraint pk_tbl_category_details primary key (id))
 ;
 
+create table tbl_items (
+  id                        bigint auto_increment not null,
+  category_id               bigint,
+  item_code                 varchar(255),
+  item_name                 varchar(255),
+  comments                  varchar(255),
+  constraint pk_tbl_items primary key (id))
+;
+
 create table tbl_users (
   id                        bigint auto_increment not null,
   username                  varchar(255),
@@ -38,6 +47,8 @@ SET FOREIGN_KEY_CHECKS=0;
 drop table tbl_category;
 
 drop table tbl_category_details;
+
+drop table tbl_items;
 
 drop table tbl_users;
 

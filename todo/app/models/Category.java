@@ -30,4 +30,11 @@ public class Category extends Model {
     public static List<Category> getAllCategory(){
         return find.where().findList();
     }
+
+    public static Category findbyCategoryId(Long Id){
+        return find.where().eq("Id",Id).findUnique();
+    }
+
+
+
 }
