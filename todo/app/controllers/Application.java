@@ -15,7 +15,8 @@ import views.html.*;
 public class Application extends Controller {
 
     public static Result index() {
-        return ok(login.render("Login Page || TODO"));
+//        return ok(login.render("Login Page || TODO"));
+        return ok("Just Okay");
     }
 
     public static Result registerPage() {
@@ -44,10 +45,17 @@ public class Application extends Controller {
         return ok(itemDetails.render("Item TODO"));
     }
 
+    public static Result viewPsword(Users userpswd) {
+        return ok(viewPassword.render(userpswd));
+    }
+
+
+
     public static Result viewDetails(Long Id) {
         Category itm = Category.findbyCategoryId(Id);
         return ok(viewItems.render("View Item Details",itm));
     }
+
 
     public static Result itemPage() {
         return ok(itemDetails.render("Item Definition TODO"));
@@ -62,6 +70,7 @@ public class Application extends Controller {
         String password =form.get("password");
         String name =form.get("surname");
         String email =form.get("email");
+        String pin =form.get("pin");
 
 
         if (Users.findUserByUsername(username) !=null) {
@@ -76,6 +85,7 @@ public class Application extends Controller {
         userDt.password= password;
         userDt.email= email;
         userDt.name= name;
+        userDt.pin= pin;
         userDt.save();
 
         result.put("message","Users"+username+"Created Successfully!");
@@ -217,6 +227,60 @@ public class Application extends Controller {
 
         return viewDetails(Id);
 
+    }
+
+
+    // Edit Section
+
+    public static Result editCategory(Long Id) {
+
+        ObjectNode result=Json.newObject();
+
+        DynamicForm form=Form.form().bindFromRequest();
+        Long id= Long.valueOf(form.get("categoryId"));
+        String categoryCode=form.get("categoryCode");
+        String categoryName=form.get("categoryName");
+
+        Category edt= Category.findbyCategoryId(Id);
+        if (edt != null) {
+            Logger.info("Edit Category");
+            edt.delete();
+        }
+        else {
+            Logger.info("Category Not Found!");
+        }
+
+        return categoryDetailsPage();
+
+    }
+
+    // Forgot Password
+
+    public static Result pinUser() {
+
+        DynamicForm form = Form.form().bindFromRequest();
+        Logger.info(form.get("username"));
+        ObjectNode result = Json.newObject();
+
+        String username = form.get("username");
+        String pin = form.get("pin");
+        String password = form.get("password");
+
+        Users pinCheck = Users.findUserByUsername(username);
+
+        if (pinCheck != null) {
+            if (!pinCheck.pin.equals(pin)) {
+                result.put("message", "Pin Is Invalid");
+                result.put("code", "2009");
+                return viewPsword(pinCheck);
+            }
+        } else{
+            result.put("message", "Invalid Pin!");
+            result.put("code","2008");
+            return ok();
+        }
+
+        return ok();
     }
 
 }

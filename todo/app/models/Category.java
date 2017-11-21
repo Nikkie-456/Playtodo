@@ -35,6 +35,4 @@ public class Category extends Model {
         return find.where().eq("Id",Id).findUnique();
     }
 
-
-
 }

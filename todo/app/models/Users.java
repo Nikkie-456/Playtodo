@@ -28,6 +28,8 @@ public class Users extends Model{
 
     public String password;
 
+    public String pin;
+
     public static Finder<Long,Users> find=new Finder<Long,Users>(Long.class,Users.class);
 
     public static Users findUserByUsername(String username){
