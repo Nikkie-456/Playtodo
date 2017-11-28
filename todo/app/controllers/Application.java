@@ -5,18 +5,19 @@ import models.Category;
 import models.CategoryDetails;
 import models.Items;
 import models.Users;
+
 import play.Logger;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.libs.Json;
 import play.mvc.*;
+import scala.util.parsing.combinator.testing.Str;
 import views.html.*;
 
 public class Application extends Controller {
 
     public static Result index() {
-//        return ok(login.render("Login Page || TODO"));
-        return ok("Just Okay");
+      return ok(login.render("Login Page || TODO"));
     }
 
     public static Result registerPage() {
@@ -45,9 +46,7 @@ public class Application extends Controller {
         return ok(itemDetails.render("Item TODO"));
     }
 
-    public static Result viewPsword(Users userpswd) {
-        return ok(viewPassword.render(userpswd));
-    }
+
 
 
 
@@ -129,12 +128,12 @@ public class Application extends Controller {
         String categoryName =form.get("categoryName");
         String comments =form.get("comments");
 
-
-        if (Users.findUserByUsername(categoryName) !=null) {
-            result.put("message","Category"+categoryName+"already exist!");
-            result.put("code","202");
-            return ok(result);
-        }
+          Logger.info("New"+categoryCode);
+//        if (Users.findUserByUsername(categoryName) !=null) {
+//            result.put("message","Category"+categoryName+"already exist!");
+//            result.put("code","202");
+//            return ok(result);
+//        }
 
 
         Category categDt=new Category();
@@ -143,9 +142,11 @@ public class Application extends Controller {
         categDt.comments= comments;
         categDt.save();
 
+        Logger.info("Saved");
+
         result.put("message","Category"+categoryName+"Created Successfully!");
         result.put("code","2004");
-        return ok(result);
+        return categoryDetailsPage();
     }
 
 
@@ -196,7 +197,7 @@ public class Application extends Controller {
 
         result.put("message","Item"+itemName+"Created Successfully!");
         result.put("code","2007");
-        return ok(result);
+        return viewDetails(Long.valueOf(categoryId));
 
 
     }
@@ -232,19 +233,29 @@ public class Application extends Controller {
 
     // Edit Section
 
-    public static Result editCategory(Long Id) {
+
+    public static Result editCat(Long Id) {
+        Category itm = Category.findbyCategoryId(Id);
+        return ok(editCategory.render("Edit Category Details",Id,itm));
+    }
+
+    public static Result editCategory() {
 
         ObjectNode result=Json.newObject();
 
         DynamicForm form=Form.form().bindFromRequest();
-        Long id= Long.valueOf(form.get("categoryId"));
+        String Id= form.get("categoryId");
         String categoryCode=form.get("categoryCode");
         String categoryName=form.get("categoryName");
+        String comments=form.get("comments");
 
-        Category edt= Category.findbyCategoryId(Id);
+        Category edt= Category.findbyCategoryId(Long.valueOf(Id));
         if (edt != null) {
             Logger.info("Edit Category");
-            edt.delete();
+            edt.categoryCode=categoryCode;
+            edt.categoryName=categoryName;
+            edt.comments=comments;
+            edt.save();
         }
         else {
             Logger.info("Category Not Found!");
@@ -256,7 +267,15 @@ public class Application extends Controller {
 
     // Forgot Password
 
-    public static Result pinUser() {
+    public static Result forgotPswdPage() {
+        return ok(forgotPassword.render("Forgot Password"));
+    }
+
+    public static Result viewPsword(Users userpswd) {
+        return ok(viewPassword.render(userpswd));
+    }
+
+    public static Result forgotPassword() {
 
         DynamicForm form = Form.form().bindFromRequest();
         Logger.info(form.get("username"));
@@ -272,15 +291,15 @@ public class Application extends Controller {
             if (!pinCheck.pin.equals(pin)) {
                 result.put("message", "Pin Is Invalid");
                 result.put("code", "2009");
-                return viewPsword(pinCheck);
+                return ok(result);
             }
         } else{
             result.put("message", "Invalid Pin!");
             result.put("code","2008");
-            return ok();
+            return ok(result);
         }
 
-        return ok();
+        return viewPsword(pinCheck);
     }
 
 }

@@ -49,7 +49,6 @@
           <th>Category Code</th>
           <th>Category Decsription</th>
           <th>Edit</th>
-          <th>ViewItems</th>
           <th>Delete</th>
         </thead>
 
@@ -63,19 +62,14 @@
             @items.itemName
             </td>
             <td>
-            Category.findbyCategoryId(@category.id).categoryCode
+            @Category.findbyCategoryId(category.id).categoryCode
             </td>
             <td>
-            Category.findbyCategoryId(@category.id).categoryName
+            @Category.findbyCategoryId(category.id).categoryName
             </td>
             <td>
               <a class="btn btn-info btn-sm" href="@routes.Application.viewDetails(category.id)"> Edit</a>
             </td>
-
-            <td>
-              <a class="btn btn-info btn-sm" href="@routes.Application.itemPage()">ViewItems</a>
-            </td>
-
             <td>
               <a class="btn btn-danger btn-sm" href="@routes.Application.delItm(category.id)">Delete</a>
             </td>
