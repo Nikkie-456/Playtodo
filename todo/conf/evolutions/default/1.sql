@@ -7,6 +7,7 @@ create table tbl_category (
   id                        bigint auto_increment not null,
   category_code             varchar(255),
   category_name             varchar(255),
+  userid                    bigint,
   comments                  varchar(255),
   constraint pk_tbl_category primary key (id))
 ;

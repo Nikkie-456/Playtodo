@@ -6,6 +6,7 @@ import play.db.ebean.Model;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.List;
 
 /**
  * Created by Administrator on 10/31/2017.
@@ -34,6 +35,10 @@ public class Users extends Model{
 
     public static Users findUserByUsername(String username){
         return find.where().eq("username",username).findUnique();
+    }
+
+    public static List<Users> getAllUsers(){
+        return find.where().findList();
     }
 
 }

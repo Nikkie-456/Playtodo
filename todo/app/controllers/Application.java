@@ -12,7 +12,6 @@ import play.data.DynamicForm;
 import play.data.Form;
 import play.libs.Json;
 import play.mvc.*;
-import scala.util.parsing.combinator.testing.Str;
 import views.html.*;
 
 import java.util.Date;
@@ -25,9 +24,7 @@ public class Application extends Controller {
     }
 
     public static Result registerPage() {
-        if(checkUserSession())
         return ok(register.render("Register || TODO"));
-        return index();
     }
 
     public static Result categoryPage() {
@@ -144,10 +141,11 @@ public class Application extends Controller {
     //user object session
 
     public  static Users getUserBySession() {
-        ObjectNode result =Json.newObject();
+        Logger.info("Check if user is logged in here");
         if (session().get("username")!=null)
             return Users.findUserByUsername(session().get("username"));
 
+        Logger.info("User Is Not Logged In");
         return null;
     }
 
@@ -184,6 +182,7 @@ public class Application extends Controller {
 
         Category categDt=new Category();
         categDt.categoryCode= categoryCode;
+        categDt.userid =getUserBySession().id;
         categDt.categoryName= categoryName;
         categDt.comments= comments;
         categDt.save();
