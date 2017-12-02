@@ -1,6 +1,7 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Optional;
 import models.Category;
 import models.CategoryDetails;
 import models.Items;
@@ -14,6 +15,9 @@ import play.mvc.*;
 import scala.util.parsing.combinator.testing.Str;
 import views.html.*;
 
+import java.util.Date;
+
+
 public class Application extends Controller {
 
     public static Result index() {
@@ -21,29 +25,41 @@ public class Application extends Controller {
     }
 
     public static Result registerPage() {
+        if(checkUserSession())
         return ok(register.render("Register || TODO"));
+        return index();
     }
 
     public static Result categoryPage() {
-        return ok(category.render("Category Details || TODO"));
+        if(checkUserSession())
+            return ok(category.render("Category Details || TODO"));
+        return index();
     }
 
 
     public static Result category() {
+        if(checkUserSession())
         return ok(category.render("Category || TODO"));
+        return index();
     }
 
 
     public static Result categoryDetailsPage() {
+        if(checkUserSession())
         return ok(categoryDetails.render("Sub Category Details || TODO"));
+        return index();
     }
 
     public static Result categoryDetails() {
+        if(checkUserSession())
         return ok(categoryDetails.render("Sub Category || TODO"));
+        return index();
     }
 
     public static Result itemdetails() {
+        if(checkUserSession())
         return ok(itemDetails.render("Item TODO"));
+        return index();
     }
 
 
@@ -52,12 +68,16 @@ public class Application extends Controller {
 
     public static Result viewDetails(Long Id) {
         Category itm = Category.findbyCategoryId(Id);
+        if(checkUserSession())
         return ok(viewItems.render("View Item Details",itm));
+        return index();
     }
 
 
     public static Result itemPage() {
+        if(checkUserSession())
         return ok(itemDetails.render("Item Definition TODO"));
+        return index();
     }
 
     public static Result register() {
@@ -115,9 +135,35 @@ public class Application extends Controller {
             return ok(result);
         }
 
+        session().put("username",check.username);
         result.put("message","Login Successfull!");
         result.put("code","2003");
         return categoryDetailsPage();
+    }
+
+    //user object session
+
+    public  static Users getUserBySession() {
+        ObjectNode result =Json.newObject();
+        if (session().get("username")!=null)
+            return Users.findUserByUsername(session().get("username"));
+
+        return null;
+    }
+
+    //user session check
+
+    public static boolean checkUserSession(){
+           if (session().get("username")!=null)
+               return true;
+        return false;
+    }
+
+    //clear session
+
+    public static Result logouts() {
+        session().clear();
+        return index();
     }
 
     public static Result categDetails(){
@@ -300,6 +346,33 @@ public class Application extends Controller {
         }
 
         return viewPsword(pinCheck);
+    }
+
+    //Sessions Section
+
+    private static final long maxInactivityTime = 300000L; // 5 minutes
+    private static final String LAST_SEEN = "last_seen";
+
+
+//    public Result index1() {
+//        return Optional.ofNullable(session(LAST_SEEN))
+//                .map(s -> new Date().getTime() - Long.valueOf(s) > maxInactivityTime ? renderfirstVisit() : rendersecondVisit())
+//                .orElseGet(this::renderfirstVisit);
+//
+//    }
+
+    private Result rendersecondVisit() {
+               updateLastSeen();
+               return ok(secondVisit.render());
+    }
+
+    private Result renderfirstVisit() {
+        updateLastSeen();
+        return ok(firstVisit.render());
+    }
+
+    private void updateLastSeen() {
+        session().put(LAST_SEEN, String.valueOf(new Date().getTime()));
     }
 
 }

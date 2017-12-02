@@ -4,6 +4,7 @@
 
 # Home page
 GET     /                           controllers.Application.index()
+GET     /logoutpage                 controllers.Application.logouts()
 GET		/registerpage			    controllers.Application.registerPage()
 GET		/categorypage			    controllers.Application.categoryPage()
 GET		/categorydetailspage	    controllers.Application.categoryDetailsPage()
