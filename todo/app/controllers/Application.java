@@ -124,7 +124,7 @@ public class Application extends Controller {
             if (!check.password.equals(password)) {
                 result.put("message", "Invalid Password!");
                 result.put("code", "2001");
-                return index();
+                return ok(result);
             }
         } else{
             result.put("message", "Invalid Username!");
@@ -134,8 +134,8 @@ public class Application extends Controller {
 
         session().put("username",check.username);
         result.put("message","Login Successfull!");
-        result.put("code","2003");
-        return categoryDetailsPage();
+        result.put("code","200");
+        return ok(result);
     }
 
     //user object session
